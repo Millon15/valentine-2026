@@ -9,6 +9,7 @@ interface QuestionCardProps {
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({
   questionText,
+  videoSrc,
   children,
 }) => {
   return (
@@ -28,6 +29,18 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent pointer-events-none" />
           
           <div className="space-y-6 sm:space-y-8 lg:space-y-10 relative">
+            {videoSrc && (
+              <div className="flex justify-center motion-reduce:hidden">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  src={import.meta.env.BASE_URL + videoSrc}
+                  className="rounded-2xl max-h-48 sm:max-h-56 lg:max-h-64 w-auto object-contain"
+                />
+              </div>
+            )}
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-rose-900 text-center leading-tight">
               {questionText}
             </h2>
