@@ -14,6 +14,7 @@ import { Footer } from './components/Footer';
 import { questions } from './data/questions';
 import { triggerCelebration } from './utils/confetti';
 import { sendQuizAnswers, initializeEmailJS } from './utils/emailjs';
+import { useQuizPersistence } from './hooks/useQuizPersistence';
 import type { Question } from './types/Question';
 
 type Step = 'intro' | 'question' | 'score' | 'letter' | 'valentine';
@@ -58,13 +59,14 @@ function getAnswerText(question: Question, letterSegment: string | undefined): s
 function quizReducer(state: QuizState, action: QuizAction): QuizState {
   switch (action.type) {
     case 'START_QUIZ':
-      return {
-        ...state,
-        step: 'question',
-        questionIndex: 0,
-        answers: [],
-        emailSent: false,
-      };
+       sessionStorage.removeItem('quiz-state');
+       return {
+         ...state,
+         step: 'question',
+         questionIndex: 0,
+         answers: [],
+         emailSent: false,
+       };
 
     case 'ANSWER_QUESTION': {
        const newAnswers = [...state.answers];
@@ -139,11 +141,12 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
 }
 
 export default function App() {
-  const [state, dispatch] = useReducer(quizReducer, initialState);
+   const [state, dispatch] = useReducer(quizReducer, initialState);
+   useQuizPersistence(state, dispatch);
 
-  useEffect(() => {
-    initializeEmailJS();
-  }, []);
+   useEffect(() => {
+     initializeEmailJS();
+   }, []);
 
   const handleStart = () => {
     dispatch({ type: 'START_QUIZ' });
@@ -247,8 +250,40 @@ export default function App() {
     return (
       <>
         <ValentinePrompt
-          onYes={async () => {
+          onYes={async (noCount: number) => {
             await triggerCelebration();
+
+            if (state.emailSent) return;
+            dispatch({ type: 'MARK_EMAIL_SENT' });
+
+            const answersHtml = questions
+              .map((q, i) => {
+                const segment = state.answers[i];
+                const answerText = getAnswerText(q, segment);
+                return `<strong>${q.question}</strong><br/>${answerText || '\u2014'}`;
+              })
+              .join('<br/><br/>');
+
+            const loveLetterText = [
+              'Dear Tanya,',
+              '',
+              ...state.answers.filter(Boolean),
+              '',
+              'With all my love,',
+              'Forever yours Vitas \u2764\uFE0F',
+            ].join('\n');
+
+            try {
+              await sendQuizAnswers({
+                user_name: 'Tanya',
+                answers: answersHtml,
+                love_letter: loveLetterText,
+                no_count: String(noCount),
+                timestamp: new Date().toISOString(),
+              });
+            } catch (error) {
+              console.error('Failed to send quiz answers:', error);
+            }
           }}
         />
         <Footer />
