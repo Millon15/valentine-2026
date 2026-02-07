@@ -6,48 +6,91 @@ interface IntroScreenProps {
 
 export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl w-full">
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl shadow-rose-200/50 p-8 sm:p-12 lg:p-16 border border-rose-300">
-          <div className="text-center space-y-6 sm:space-y-8">
-            <div className="space-y-3 sm:space-y-4">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-rose-900 tracking-tight">
-                Happy Valentine's Day
-              </h1>
-              <p className="text-2xl sm:text-3xl lg:text-4xl font-light text-rose-700">
-                Tanya
-              </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative overflow-hidden">
+      {/* Animated background hearts */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 animate-pulse text-6xl">💕</div>
+        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 animate-pulse text-5xl" style={{ animationDelay: '1s' }}>✨</div>
+        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 animate-pulse text-5xl" style={{ animationDelay: '2s' }}>💖</div>
+        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 animate-pulse text-6xl" style={{ animationDelay: '1.5s' }}>💝</div>
+      </div>
+
+      <div className="max-w-2xl w-full relative z-10">
+        {/* Liquid glass card */}
+        <div className="bg-white/40 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 sm:p-12 lg:p-16 border border-white/60 relative overflow-hidden">
+          {/* Glass reflection effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent pointer-events-none" />
+          
+          <div className="text-center space-y-4 sm:space-y-6 relative">
+            {/* Subtitle */}
+            <p className="text-lg sm:text-xl text-rose-700 font-medium tracking-wide">
+              Happy Valentine's Day
+            </p>
+
+            {/* TANYA'S NAME - HUGE with decorations */}
+            <div className="relative py-6 sm:py-8">
+              {/* Decorative hearts around name */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl sm:text-4xl animate-bounce">
+                💖
+              </div>
+              <div className="absolute top-1/2 left-0 sm:left-[-20px] -translate-y-1/2 text-2xl sm:text-3xl animate-pulse" style={{ animationDelay: '0.5s' }}>
+                ✨
+              </div>
+              <div className="absolute top-1/2 right-0 sm:right-[-20px] -translate-y-1/2 text-2xl sm:text-3xl animate-pulse" style={{ animationDelay: '0.5s' }}>
+                ✨
+              </div>
+              <div className="absolute bottom-0 left-[20%] translate-y-1/2 text-xl sm:text-2xl animate-bounce" style={{ animationDelay: '0.3s' }}>
+                💕
+              </div>
+              <div className="absolute bottom-0 right-[20%] translate-y-1/2 text-xl sm:text-2xl animate-bounce" style={{ animationDelay: '0.7s' }}>
+                💕
+              </div>
+
+              {/* Tanya's name with liquid glass effect */}
+              <div className="relative inline-block">
+                {/* Glow effect behind name */}
+                <div className="absolute inset-0 blur-2xl bg-gradient-to-r from-rose-400 via-pink-400 to-rose-400 opacity-30 animate-pulse" />
+                
+                <h1 className="relative text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold bg-gradient-to-br from-rose-600 via-pink-500 to-rose-600 bg-clip-text text-transparent drop-shadow-2xl tracking-tight animate-[scale-in_0.6s_ease-out] px-4 leading-[1.2]">
+                  Tanya
+                </h1>
+                
+                {/* Sparkle overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-transparent pointer-events-none" />
+              </div>
             </div>
 
-            <div className="h-px bg-gradient-to-r from-transparent via-rose-300 to-transparent" />
+            {/* Divider with liquid effect */}
+            <div className="relative h-px">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-400 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-300 to-transparent blur-sm" />
+            </div>
 
-            <div className="space-y-4 sm:space-y-5">
-              <p className="text-lg sm:text-xl text-rose-800 leading-relaxed">
-                I've created something special for you—a journey through our love story.
+            {/* Message with glass effect */}
+            <div className="space-y-4 sm:space-y-5 bg-white/20 backdrop-blur-md rounded-2xl p-6 border border-white/40 shadow-inner">
+              <p className="text-lg sm:text-xl text-rose-900 leading-relaxed font-medium">
+                I've created something special for you — a journey through our love story.
               </p>
               <p className="text-base sm:text-lg text-rose-700 leading-relaxed">
-                Answer 7 questions, and I'll write you a personalized love letter that captures what makes us extraordinary.
+                Answer next 7 questions please :3
               </p>
             </div>
 
+            {/* Button with enhanced liquid glass */}
             <button
               type="button"
               onClick={onStart}
-              className="mt-8 sm:mt-10 px-8 sm:px-12 py-4 sm:py-5 bg-rose-500 hover:bg-rose-600 text-white text-lg sm:text-xl font-semibold rounded-full shadow-lg shadow-rose-300/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-400/50 active:scale-95"
+              className="group relative mt-6 sm:mt-8 px-8 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-rose-500 via-pink-500 to-rose-500 hover:from-rose-600 hover:via-pink-600 hover:to-rose-600 text-white text-lg sm:text-xl font-bold rounded-full shadow-lg shadow-rose-400/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-rose-500/60 active:scale-95 overflow-hidden"
             >
-              Begin Our Journey
+              {/* Glass shine effect on hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <span className="relative">Begin Our Journey 💝</span>
             </button>
 
-            <p className="text-sm sm:text-base text-rose-600 mt-6 sm:mt-8">
-              Takes about 2 minutes • Made with love just for you
+            <p className="text-sm sm:text-base text-rose-600 mt-4 sm:mt-6 bg-white/30 backdrop-blur-sm rounded-full px-6 py-2 inline-block border border-white/40">
+              Takes about 2 minutes • Made with love by Vitas 💕
             </p>
           </div>
-        </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-sm text-rose-700/70">
-            Every answer you choose will become part of your unique love letter
-          </p>
         </div>
       </div>
     </div>
