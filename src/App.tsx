@@ -35,7 +35,8 @@ type QuizAction =
   | { type: 'SHOW_LETTER' }
   | { type: 'SHOW_VALENTINE' }
   | { type: 'MARK_EMAIL_SENT' }
-  | { type: 'RESTORE_STATE'; state: QuizState };
+  | { type: 'RESTORE_STATE'; state: QuizState }
+  | { type: 'NAVIGATE_TO'; step: Step; questionIndex: number };
 
 const initialState: QuizState = {
   step: 'intro',
@@ -134,6 +135,13 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
 
      case 'RESTORE_STATE':
        return action.state;
+
+     case 'NAVIGATE_TO':
+       return {
+         ...state,
+         step: action.step,
+         questionIndex: action.questionIndex,
+       };
 
      default:
        return state;
