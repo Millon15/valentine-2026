@@ -752,7 +752,7 @@ Parallel Speedup: ~50% faster than sequential
 
 ---
 
-- [ ] 
+- [x] 
   6. Quiz Flow State Management + Navigation Logic
 
   **What to do**:
