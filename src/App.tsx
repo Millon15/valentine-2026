@@ -21,6 +21,7 @@ interface QuizState {
   step: Step;
   questionIndex: number;
   answers: string[];
+  emailSent: boolean;
 }
 
 type QuizAction =
@@ -36,6 +37,7 @@ const initialState: QuizState = {
   step: 'intro',
   questionIndex: 0,
   answers: [],
+  emailSent: false,
 };
 
 function quizReducer(state: QuizState, action: QuizAction): QuizState {
@@ -46,33 +48,37 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
         step: 'question',
         questionIndex: 0,
         answers: [],
+        emailSent: false,
       };
 
     case 'ANSWER_QUESTION': {
-      const newAnswers = [...state.answers];
-      newAnswers[state.questionIndex] = action.letterSegment;
+       const newAnswers = [...state.answers];
+       newAnswers[state.questionIndex] = action.letterSegment;
 
-      // Auto-advance: if not the last question, move to next
-      const isLastQuestion = state.questionIndex === questions.length - 1;
-      
-      return {
-        ...state,
-        answers: newAnswers,
-        questionIndex: isLastQuestion ? state.questionIndex : state.questionIndex + 1,
-        step: isLastQuestion ? 'score' : 'question',
-      };
-    }
+       // Auto-advance: if not the last question, move to next
+       const isLastQuestion = state.questionIndex === questions.length - 1;
+       
+       return {
+         ...state,
+         answers: newAnswers,
+         questionIndex: isLastQuestion ? state.questionIndex : state.questionIndex + 1,
+         step: isLastQuestion ? 'score' : 'question',
+         emailSent: state.emailSent,
+       };
+     }
 
     case 'NEXT_QUESTION':
       if (state.questionIndex < questions.length - 1) {
         return {
           ...state,
           questionIndex: state.questionIndex + 1,
+          emailSent: state.emailSent,
         };
       }
       return {
         ...state,
         step: 'score',
+        emailSent: state.emailSent,
       };
 
     case 'PREVIOUS_QUESTION':
@@ -80,6 +86,7 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
         return {
           ...state,
           questionIndex: state.questionIndex - 1,
+          emailSent: state.emailSent,
         };
       }
       return state;
@@ -88,18 +95,21 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
       return {
         ...state,
         step: 'score',
+        emailSent: state.emailSent,
       };
 
     case 'SHOW_LETTER':
       return {
         ...state,
         step: 'letter',
+        emailSent: state.emailSent,
       };
 
     case 'SHOW_VALENTINE':
       return {
         ...state,
         step: 'valentine',
+        emailSent: state.emailSent,
       };
 
     default:
