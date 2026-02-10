@@ -9,7 +9,6 @@
 
 # tmp
 .DS_Store
-/config
 /tmp
 /cache
 

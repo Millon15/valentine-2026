@@ -10,64 +10,65 @@ describe('App', () => {
   it('renders intro screen on initial load', () => {
     render(<App />);
     expect(screen.getByText(/happy valentine/i)).toBeInTheDocument();
-    expect(screen.getByText(/tanya/i)).toBeInTheDocument();
+    expect(screen.getByText(/jihyeon/i)).toBeInTheDocument();
   });
 
-  it('displays progress bar during quiz', async () => {
+  it('displays progress indicator during quiz', async () => {
     const user = userEvent.setup();
     render(<App />);
-    
-    const startButton = screen.getByRole('button', { name: /begin our journey/i });
+
+    const startButton = screen.getByRole('button', { name: /let's go/i });
     await user.click(startButton);
-    
-    expect(screen.getByText(/question/i)).toBeInTheDocument();
+
+    expect(screen.getByText('Q1/7')).toBeInTheDocument();
   });
 
   it('shows first question after starting quiz', async () => {
     const user = userEvent.setup();
     render(<App />);
-    
-    const startButton = screen.getByRole('button', { name: /begin our journey/i });
+
+    const startButton = screen.getByRole('button', { name: /let's go/i });
     await user.click(startButton);
-    
-    expect(screen.getByText(/question 1 of 7/i)).toBeInTheDocument();
+
+    expect(screen.getByText('Q1/7')).toBeInTheDocument();
   });
 
   it('navigates through questions on answer selection', async () => {
     const user = userEvent.setup();
     render(<App />);
-    
-    const startButton = screen.getByRole('button', { name: /begin our journey/i });
+
+    const startButton = screen.getByRole('button', { name: /let's go/i });
     await user.click(startButton);
-    
-    const firstOption = screen.getAllByRole('button').find(btn => 
-      btn.textContent?.includes('Our first date')
+
+    const firstOption = screen.getAllByRole('button').find(btn =>
+      btn.textContent?.includes('The way our conversations just flow')
     );
-    
+
     if (firstOption) {
       await user.click(firstOption);
-      expect(screen.getByText(/question/i)).toBeInTheDocument();
+      // After selecting, need to click Next to advance
+      const nextButton = screen.getByRole('button', { name: /next/i });
+      await user.click(nextButton);
+      expect(screen.getByText('Q2/7')).toBeInTheDocument();
     }
   });
 
   it('allows answering multiple questions', async () => {
     const user = userEvent.setup();
     render(<App />);
-    
-    const startButton = screen.getByRole('button', { name: /begin our journey/i });
+
+    const startButton = screen.getByRole('button', { name: /let's go/i });
     await user.click(startButton);
-    
-    expect(screen.getByText(/question 1 of 7/i)).toBeInTheDocument();
-    
-    const allButtons = screen.getAllByRole('button');
-    const firstAnswerButton = allButtons.find(btn => {
-      const text = btn.textContent || '';
-      return text && !text.includes('Back') && !text.includes('Next') && !text.includes('Begin');
-    });
-    
-    if (firstAnswerButton) {
-      await user.click(firstAnswerButton);
-      expect(screen.getByText(/question 2 of 7/i)).toBeInTheDocument();
-    }
+
+    expect(screen.getByText('Q1/7')).toBeInTheDocument();
+
+    // Click the first answer option for Q1
+    const firstAnswerButton = screen.getByRole('button', { name: /the way our conversations just flow/i });
+    await user.click(firstAnswerButton);
+
+    // Click Next to advance
+    const nextButton = screen.getByRole('button', { name: /next/i });
+    await user.click(nextButton);
+    expect(screen.getByText('Q2/7')).toBeInTheDocument();
   });
 });

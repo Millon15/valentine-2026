@@ -1,6 +1,26 @@
 # Valentine's Day Quiz 2026 ❤️
 
-A romantic, interactive Valentine's Day quiz built with React, TypeScript, and Tailwind CSS. The quiz generates a personalized love letter based on your answers and includes a fun "runaway button" surprise at the end.
+A white-label Valentine's Day quiz that generates a personalized love letter from the recipient's answers. Fork it, customize it, send it to your person.
+
+## Quick Start
+
+```bash
+# 1. Clone & install
+git clone https://github.com/millon15/valentine-2026.git
+cd valentine-2026 && bun install
+
+# 2. Personalize — edit these two files:
+#    config/config.ts   → names, screen text, button labels
+#    config/content.ts  → quiz questions, answers, letter segments
+
+# 3. Run locally
+bun run dev
+
+# 4. Deploy — push to GitHub, enable Pages (Settings → Pages → Source: GitHub Actions)
+#    Live at: https://<your-username>.github.io/valentine-2026/
+```
+
+---
 
 ## Table of Contents
 
@@ -11,8 +31,9 @@ A romantic, interactive Valentine's Day quiz built with React, TypeScript, and T
   - [Available Commands](#available-commands)
 - [EmailJS Setup (Optional)](#emailjs-setup-optional)
 - [Customization](#customization)
+  - [White-Label Config](#white-label-config)
   - [Update Quiz Questions](#update-quiz-questions)
-  - [Update Love Letter Recipient](#update-love-letter-recipient)
+  - [Swap Videos](#swap-videos)
   - [Customize Design Variants](#customize-design-variants)
   - [Customize Email Template](#customize-email-template)
 - [Deployment](#deployment)
@@ -111,19 +132,56 @@ For detailed step-by-step instructions, see **[email-templates/SETUP.md](./email
 
 ## Customization
 
+### White-Label Config
+
+All user-facing text is centralized in [`config/config.ts`](./config/config.ts). Edit this single file to personalize the entire quiz -- no other source files need to change.
+
+**What you can customize:**
+
+| Section | What it controls |
+|---|---|
+| `recipientName` / `senderName` | Names used across all screens |
+| `pageTitle` | Browser tab title |
+| `intro` | Welcome screen greeting, message, button label, time estimate |
+| `scoreReveal` | "100% Match" results screen heading, message, button |
+| `loveLetter` | Love letter heading, closing line, signature, button |
+| `valentine` | "Will you be my Valentine?" question, subtitle, buttons, witty "No" messages |
+| `footer` | Footer text (`{sender}` and `{recipient}` are replaced automatically) |
+
+**Example -- change names:**
+
+```ts
+// config/config.ts
+export const config = {
+  recipientName: 'Alex',
+  senderName: 'Jordan',
+  // ...
+};
+```
+
 ### Update Quiz Questions
 
-Edit `/src/data/questions.ts` to modify:
-- Question text and options
-- Letter segments (text that appears in the final love letter)
-- Design variants (visual themes)
-- Question types
+Edit [`config/content.ts`](./config/content.ts) to modify:
+- Question text and answer options
+- Letter segments (text assembled into the final love letter)
+- Design variants (visual themes per question)
+- Question types (`multipleChoice`, `heartRating`, `yesNo`, `emojiReaction`)
 
-### Update Love Letter Recipient
+### Swap Videos
 
-The love letter is addressed to "Tanya" (hardcoded). To change:
-1. Edit `/src/components/LoveLetter.tsx`
-2. Replace `"Dear Tanya,"` with the desired name
+Place video files in `public/videos/` and reference them in `config/content.ts` via the `videoSrc` field:
+
+```ts
+{
+  id: 'q1',
+  type: 'multipleChoice',
+  question: 'Your question here',
+  videoSrc: 'videos/my-video.mp4',  // relative to public/
+  // ...
+}
+```
+
+Supported formats: `.mp4`, `.webm`. Keep files under 15-20 MB for fast loading. Not every question needs a video -- omit `videoSrc` to show only the question card.
 
 ### Customize Design Variants
 
@@ -189,8 +247,11 @@ bun run build
 ## Project Structure
 
 ```
+config/
+├── config.ts              # White-label configuration (names, text, messages)
+└── content.ts             # Quiz questions, answers, and letter segments
 src/
-├── components/          # React components
+├── components/            # React components
 │   ├── IntroScreen.tsx
 │   ├── QuestionCard.tsx
 │   ├── ProgressBar.tsx
@@ -199,15 +260,16 @@ src/
 │   ├── ValentinePrompt.tsx
 │   └── ...
 ├── data/
-│   └── questions.ts     # Quiz questions and letter segments
+│   └── questions.ts       # Quiz questions and letter segments
 ├── styles/
 │   └── questionVariants.ts  # Design themes
 ├── utils/
-│   ├── confetti.ts      # Celebration animations
-│   └── emailjs.ts       # Email integration
-├── App.tsx              # Main app component
-├── index.css            # Global styles
-└── main.tsx             # Entry point
+│   ├── confetti.ts        # Celebration animations
+│   ├── selectionBurst.ts  # Selection feedback effects
+│   └── emailjs.ts         # Email integration
+├── App.tsx                # Main app component
+├── index.css              # Global styles
+└── main.tsx               # Entry point
 ```
 
 ## Technology Stack

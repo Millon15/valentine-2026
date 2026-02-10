@@ -1,3 +1,5 @@
+import { config } from '../../config/config';
+
 interface LoveLetterProps {
   letterSegments: string[];
   onContinue: () => void;
@@ -8,12 +10,12 @@ export function LoveLetter({ letterSegments, onContinue }: LoveLetterProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative overflow-hidden">
-      {/* Animated background hearts */}
+      {/* Floating background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 animate-pulse text-6xl">💕</div>
-        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 animate-pulse text-5xl" style={{ animationDelay: '1s' }}>✨</div>
-        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 animate-pulse text-5xl" style={{ animationDelay: '2s' }}>💖</div>
-        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 animate-pulse text-6xl" style={{ animationDelay: '1.5s' }}>💝</div>
+        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 text-6xl animate-[float-1_8s_ease-in-out_infinite]">💕</div>
+        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 text-5xl animate-[float-2_10s_ease-in-out_infinite]" style={{ animationDelay: '1s' }}>✨</div>
+        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 text-5xl animate-[float-3_9s_ease-in-out_infinite]" style={{ animationDelay: '2s' }}>💖</div>
+        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 text-6xl animate-[float-1_11s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }}>💝</div>
       </div>
 
       <div className="max-w-3xl w-full relative z-10">
@@ -26,7 +28,7 @@ export function LoveLetter({ letterSegments, onContinue }: LoveLetterProps) {
             <div className="text-center mb-8">
               <div className="text-4xl sm:text-5xl mb-4">💌</div>
               <h1 className="text-3xl sm:text-4xl font-bold text-rose-900 mb-4">
-                A Letter For You
+                {config.loveLetter.heading}
               </h1>
               {/* Divider with liquid effect */}
               <div className="relative h-px w-24 mx-auto">
@@ -37,22 +39,32 @@ export function LoveLetter({ letterSegments, onContinue }: LoveLetterProps) {
 
             <div className="bg-white/20 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/40 shadow-inner">
               <div className="prose prose-lg max-w-none leading-relaxed space-y-6">
-                <p className="text-xl font-serif text-rose-900 mb-6 font-medium">
-                  Dear Tanya,
+                <p
+                  className="text-xl font-serif text-rose-900 mb-6 font-medium animate-[fadeIn_0.6s_ease-out]"
+                  style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
+                >
+                  Dear {config.recipientName},
                 </p>
 
-                {validSegments.map((segment) => (
-                  <p key={segment.slice(0, 30)} className="font-serif text-rose-800 text-lg leading-relaxed">
+                {validSegments.map((segment, index) => (
+                  <p
+                    key={segment.slice(0, 30)}
+                    className="font-serif text-rose-800 text-lg leading-relaxed animate-[fadeIn_0.6s_ease-out]"
+                    style={{ animationDelay: `${(index + 1) * 0.4}s`, animationFillMode: 'both' }}
+                  >
                     {segment}
                   </p>
                 ))}
 
-                <div className="mt-8 pt-6 border-t border-rose-300/50">
+                <div
+                  className="mt-8 pt-6 border-t border-rose-300/50 animate-[fadeIn_0.6s_ease-out]"
+                  style={{ animationDelay: `${(validSegments.length + 1) * 0.4}s`, animationFillMode: 'both' }}
+                >
                   <p className="font-serif text-lg text-rose-900 font-medium">
-                    With all my love,
+                    {config.loveLetter.closing}
                   </p>
                   <p className="font-serif text-xl text-rose-900 mt-2 italic font-semibold">
-                    Forever yours Vitas ❤️
+                    {config.loveLetter.signaturePrefix} {config.senderName} ❤️
                   </p>
                 </div>
               </div>
@@ -66,7 +78,7 @@ export function LoveLetter({ letterSegments, onContinue }: LoveLetterProps) {
               >
                 {/* Glass shine effect on hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                <span className="relative">Continue 💖</span>
+                <span className="relative">{config.loveLetter.continueButton} 💌</span>
               </button>
             </div>
           </div>

@@ -1,6 +1,5 @@
 import { useReducer, useEffect } from 'react';
 import { IntroScreen } from './components/IntroScreen';
-import { ProgressBar } from './components/ProgressBar';
 import { QuestionCard } from './components/QuestionCard';
 import { MultipleChoiceQuestion } from './components/MultipleChoiceQuestion';
 import { HeartRatingQuestion } from './components/HeartRatingQuestion';
@@ -11,11 +10,13 @@ import { ScoreReveal } from './components/ScoreReveal';
 import { LoveLetter } from './components/LoveLetter';
 import { ValentinePrompt } from './components/ValentinePrompt';
 import { Footer } from './components/Footer';
-import { questions } from './data/questions';
+import { JourneyIndicator } from './components/JourneyIndicator';
+import { questions } from '../config/content';
 import { triggerCelebration } from './utils/confetti';
 import { sendQuizAnswers, initializeEmailJS } from './utils/emailjs';
 import { useQuizPersistence } from './hooks/useQuizPersistence';
 import { useQuizNavigation } from './hooks/useQuizNavigation';
+import { config } from '../config/config';
 import type { Question } from './types/Question';
 
 type Step = 'intro' | 'question' | 'score' | 'letter' | 'valentine';
@@ -25,6 +26,8 @@ interface QuizState {
   questionIndex: number;
   answers: string[];
   emailSent: boolean;
+  reachedEnd: boolean;
+  yesClicked: boolean;
 }
 
 type QuizAction =
@@ -36,6 +39,7 @@ type QuizAction =
   | { type: 'SHOW_LETTER' }
   | { type: 'SHOW_VALENTINE' }
   | { type: 'MARK_EMAIL_SENT' }
+  | { type: 'MARK_YES_CLICKED' }
   | { type: 'RESTORE_STATE'; state: QuizState }
   | { type: 'NAVIGATE_TO'; step: Step; questionIndex: number };
 
@@ -44,6 +48,8 @@ const initialState: QuizState = {
   questionIndex: 0,
   answers: [],
   emailSent: false,
+  reachedEnd: false,
+  yesClicked: false,
 };
 
 function getAnswerText(question: Question, letterSegment: string | undefined): string {
@@ -68,21 +74,17 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
          questionIndex: 0,
          answers: [],
          emailSent: false,
+         reachedEnd: false,
+         yesClicked: false,
        };
 
     case 'ANSWER_QUESTION': {
        const newAnswers = [...state.answers];
        newAnswers[state.questionIndex] = action.letterSegment;
 
-       // Auto-advance: if not the last question, move to next
-       const isLastQuestion = state.questionIndex === questions.length - 1;
-       
        return {
          ...state,
          answers: newAnswers,
-         questionIndex: isLastQuestion ? state.questionIndex : state.questionIndex + 1,
-         step: isLastQuestion ? 'score' : 'question',
-         emailSent: state.emailSent,
        };
      }
 
@@ -128,11 +130,15 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
       return {
         ...state,
         step: 'valentine',
+        reachedEnd: true,
         emailSent: state.emailSent,
       };
 
      case 'MARK_EMAIL_SENT':
        return { ...state, emailSent: true };
+
+     case 'MARK_YES_CLICKED':
+       return { ...state, yesClicked: true };
 
      case 'RESTORE_STATE':
        return action.state;
@@ -170,25 +176,46 @@ export default function App() {
     dispatch({ type: 'PREVIOUS_QUESTION' });
   };
 
+  const handleAdvance = () => {
+    dispatch({ type: 'NEXT_QUESTION' });
+  };
+
+  const handleJourneyNavigate = (step: 'intro' | 'question' | 'score' | 'letter' | 'valentine') => {
+    if (step === 'question') {
+      dispatch({ type: 'NAVIGATE_TO', step: 'question', questionIndex: questions.length - 1 });
+    } else {
+      dispatch({ type: 'NAVIGATE_TO', step, questionIndex: 0 });
+    }
+  };
+
+  const journeyNav = state.reachedEnd ? handleJourneyNavigate : undefined;
+
   const currentQuestion = questions[state.questionIndex];
   const currentAnswer = state.answers[state.questionIndex] ?? null;
 
   // Render intro screen
   if (state.step === 'intro') {
-    return <IntroScreen onStart={handleStart} />;
+    return (
+      <div className="animate-[fadeIn_0.5s_ease-out]">
+        <JourneyIndicator currentStep={state.step} onNavigate={journeyNav} />
+        <IntroScreen onStart={handleStart} />
+      </div>
+    );
   }
 
   if (state.step === 'question' && currentQuestion) {
     return (
       <div className="min-h-screen flex flex-col animate-[fadeIn_0.4s_ease-in] relative">
-        <ProgressBar current={state.questionIndex + 1} total={questions.length} />
-        
+        <JourneyIndicator currentStep={state.step} onNavigate={journeyNav} progress={{ current: state.questionIndex + 1, total: questions.length }} />
+
          <QuestionCard
            questionText={currentQuestion.question}
            videoSrc={currentQuestion.videoSrc}
+           designVariant={currentQuestion.designVariant}
          >
           {currentQuestion.type === 'multipleChoice' && (
             <MultipleChoiceQuestion
+              key={state.questionIndex}
               question={currentQuestion}
               selectedAnswer={currentAnswer}
               onAnswer={handleAnswer}
@@ -197,6 +224,7 @@ export default function App() {
 
           {currentQuestion.type === 'heartRating' && (
             <HeartRatingQuestion
+              key={state.questionIndex}
               question={currentQuestion}
               selectedAnswer={currentAnswer}
               onAnswer={handleAnswer}
@@ -205,6 +233,7 @@ export default function App() {
 
           {currentQuestion.type === 'yesNo' && (
             <YesNoQuestion
+              key={state.questionIndex}
               question={currentQuestion}
               selectedAnswer={currentAnswer}
               onAnswer={handleAnswer}
@@ -213,6 +242,7 @@ export default function App() {
 
           {currentQuestion.type === 'emojiReaction' && (
             <EmojiReactionQuestion
+              key={state.questionIndex}
               question={currentQuestion}
               selectedAnswer={currentAnswer}
               onAnswer={handleAnswer}
@@ -221,8 +251,10 @@ export default function App() {
 
           <NavigationButtons
             onBack={handleBack}
+            onNext={handleAdvance}
             showBack={state.questionIndex > 0}
-            showNext={false}
+            showNext={true}
+            nextDisabled={currentAnswer === null}
           />
         </QuestionCard>
         <Footer />
@@ -232,7 +264,8 @@ export default function App() {
 
   if (state.step === 'score') {
     return (
-      <>
+      <div className="animate-[fadeIn_0.5s_ease-out]">
+        <JourneyIndicator currentStep={state.step} onNavigate={journeyNav} />
         <ScoreReveal
           onContinue={async () => {
             await triggerCelebration();
@@ -240,27 +273,31 @@ export default function App() {
           }}
         />
         <Footer />
-      </>
+      </div>
     );
   }
 
   if (state.step === 'letter') {
     return (
-      <>
+      <div className="animate-[fadeIn_0.5s_ease-out]">
+        <JourneyIndicator currentStep={state.step} onNavigate={journeyNav} />
         <LoveLetter
           letterSegments={state.answers}
           onContinue={() => dispatch({ type: 'SHOW_VALENTINE' })}
         />
         <Footer />
-      </>
+      </div>
     );
   }
 
   if (state.step === 'valentine') {
     return (
-      <>
+      <div className="animate-[fadeIn_0.5s_ease-out]">
+        <JourneyIndicator currentStep={state.step} onNavigate={journeyNav} />
         <ValentinePrompt
+          hideNoButton={state.yesClicked}
           onYes={async (noCount: number) => {
+            dispatch({ type: 'MARK_YES_CLICKED' });
             await triggerCelebration();
 
             if (state.emailSent) return;
@@ -275,17 +312,17 @@ export default function App() {
               .join('<br/><br/>');
 
             const loveLetterText = [
-              'Dear Tanya,',
+              `Dear ${config.recipientName},`,
               '',
               ...state.answers.filter(Boolean),
               '',
-              'With all my love,',
-              'Forever yours Vitas \u2764\uFE0F',
+              config.loveLetter.closing,
+              `${config.loveLetter.signaturePrefix} ${config.senderName} \u2764\uFE0F`,
             ].join('\n');
 
             try {
               await sendQuizAnswers({
-                user_name: 'Tanya',
+                user_name: config.recipientName,
                 answers: answersHtml,
                 love_letter: loveLetterText,
                 no_count: String(noCount),
@@ -297,7 +334,7 @@ export default function App() {
           }}
         />
         <Footer />
-      </>
+      </div>
     );
   }
 

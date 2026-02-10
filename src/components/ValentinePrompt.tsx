@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import { config } from '../../config/config';
 
 interface ValentinePromptProps {
   onYes: (noCount: number) => void;
+  hideNoButton?: boolean;
 }
 
-export function ValentinePrompt({ onYes }: ValentinePromptProps) {
+export function ValentinePrompt({ onYes, hideNoButton }: ValentinePromptProps) {
   const [noButtonPosition, setNoButtonPosition] = useState({ x: 20, y: 70 });
   const [isChasing, setIsChasing] = useState(false);
   const [buttonScale, setButtonScale] = useState(1);
@@ -13,6 +15,7 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
   const [noButtonOpacity, setNoButtonOpacity] = useState(1);
   const [isYesClicked, setIsYesClicked] = useState(false);
   const [noClickCount, setNoClickCount] = useState(0);
+  const [noClickMessage, setNoClickMessage] = useState<string | null>(null);
   const noButtonRef = useRef<HTMLButtonElement>(null);
   const buttonContainerRef = useRef<HTMLDivElement>(null);
   const scaleIntervalRef = useRef<number | null>(null);
@@ -20,57 +23,14 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
 
   const handleYesClick = () => {
     setIsYesClicked(true);
-    
+
     // Stop chase mode effects
     stopSizeAnimation();
     stopPoliceFlicker();
     setIsChasing(false);
-    setButtonScale(1);
-    
-    // Calculate nearest edge
-    if (noButtonRef.current && buttonContainerRef.current) {
-      const buttonRect = noButtonRef.current.getBoundingClientRect();
-      const containerRect = buttonContainerRef.current.getBoundingClientRect();
-      
-      const buttonCenterX = buttonRect.left + buttonRect.width / 2;
-      const buttonCenterY = buttonRect.top + buttonRect.height / 2;
-      
-      // Calculate distances to each edge
-      const distToLeft = buttonCenterX - containerRect.left;
-      const distToRight = containerRect.right - buttonCenterX;
-      const distToTop = buttonCenterY - containerRect.top;
-      const distToBottom = containerRect.bottom - buttonCenterY;
-      
-      const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
-      
-      let targetX = noButtonPosition.x;
-      let targetY = noButtonPosition.y;
-      
-      if (minDist === distToLeft) {
-        targetX = -100;
-      } else if (minDist === distToRight) {
-        targetX = containerRect.width + 100;
-      } else if (minDist === distToTop) {
-        targetY = -100;
-      } else {
-        targetY = containerRect.height + 100;
-      }
-      
-      setNoButtonPosition({ x: targetX, y: targetY });
-    }
-    
-    // Fade out over 3 seconds
-    const fadeInterval = setInterval(() => {
-      setNoButtonOpacity((prev) => {
-        const newOpacity = prev - 0.02;
-        if (newOpacity <= 0) {
-          clearInterval(fadeInterval);
-          return 0;
-        }
-        return newOpacity;
-      });
-    }, 60);
-    
+    setButtonScale(0);
+    setNoButtonOpacity(0);
+
     const duration = 3000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
@@ -215,6 +175,31 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
     };
   }, []);
 
+  const NO_CLICK_MESSAGES = config.valentine.noClickMessages;
+
+  const handleNoClick = () => {
+    const message = NO_CLICK_MESSAGES[noClickCount % NO_CLICK_MESSAGES.length];
+    setNoClickMessage(message!);
+    setNoClickCount(prev => prev + 1);
+
+    // Move the button to a random position within the container
+    if (buttonContainerRef.current && noButtonRef.current) {
+      const containerRect = buttonContainerRef.current.getBoundingClientRect();
+      const buttonRect = noButtonRef.current.getBoundingClientRect();
+      const padding = 20;
+      const maxX = containerRect.width - buttonRect.width - padding;
+      const maxY = containerRect.height - buttonRect.height - padding;
+      const newX = padding + Math.random() * Math.max(0, maxX - padding);
+      const newY = padding + Math.random() * Math.max(0, maxY - padding);
+      setNoButtonPosition({ x: newX, y: newY });
+    }
+
+    // Clear the message after 2 seconds
+    setTimeout(() => {
+      setNoClickMessage(null);
+    }, 2000);
+  };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     moveNoButton(e.clientX, e.clientY);
   };
@@ -232,12 +217,12 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
     <div
       className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative overflow-hidden"
     >
-      {/* Animated background hearts */}
+      {/* Floating background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 animate-pulse text-6xl">💕</div>
-        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 animate-pulse text-5xl" style={{ animationDelay: '1s' }}>✨</div>
-        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 animate-pulse text-5xl" style={{ animationDelay: '2s' }}>💖</div>
-        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 animate-pulse text-6xl" style={{ animationDelay: '1.5s' }}>💝</div>
+        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 text-6xl animate-[float-1_8s_ease-in-out_infinite]">💕</div>
+        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 text-5xl animate-[float-2_10s_ease-in-out_infinite]" style={{ animationDelay: '1s' }}>✨</div>
+        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 text-5xl animate-[float-3_9s_ease-in-out_infinite]" style={{ animationDelay: '2s' }}>💖</div>
+        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 text-6xl animate-[float-1_11s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }}>💝</div>
       </div>
 
       <div className="max-w-2xl w-full relative z-10">
@@ -252,11 +237,11 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
                 💝
               </div>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-rose-900 mb-4">
-                Will you be my Valentine?
+                {config.valentine.question}
               </h1>
               <div className="bg-white/20 backdrop-blur-md rounded-2xl p-4 border border-white/40 shadow-inner inline-block">
                 <p className="text-lg sm:text-xl text-rose-900 font-medium">
-                  You know there's only one right answer... 💕
+                  {config.valentine.subtitle} 💕
                 </p>
               </div>
             </div>
@@ -270,13 +255,15 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
                 >
                   {/* Glass shine effect on hover */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                  <span className="relative">Yes! 💖</span>
+                  <span className="relative">{config.valentine.yesButton} 💖</span>
                 </button>
               </div>
 
+              {!hideNoButton && (
               <button
                 ref={noButtonRef}
                 type="button"
+                onClick={handleNoClick}
                 onMouseMove={handleMouseMove}
                 onTouchStart={handleTouchStart}
                 onTouchMove={(e: React.TouchEvent) => {
@@ -291,22 +278,31 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
                   position: 'absolute',
                   left: `${noButtonPosition.x}px`,
                   top: `${noButtonPosition.y}px`,
-                  transition: isYesClicked ? 'all 3s ease-out' : 'all 0.1s ease-out',
-                  transform: `scale(${buttonScale})`,
+                  transition: isYesClicked ? 'transform 0.5s ease-in, opacity 0.4s ease-in' : 'all 0.1s ease-out',
+                  transform: `scale(${buttonScale}) rotate(${isYesClicked ? '180deg' : '0deg'})`,
                   opacity: noButtonOpacity,
                   backgroundColor: policeFlicker ? '#ef4444' : '#3b82f6',
-                  boxShadow: policeFlicker 
-                    ? '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.6)' 
+                  boxShadow: policeFlicker
+                    ? '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.6)'
                     : '0 0 20px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6)',
                 }}
                 className="px-4 py-2 text-white text-sm font-normal rounded border-2 border-gray-400 hover:border-gray-500 cursor-pointer"
               >
-                No
+                {config.valentine.noButton}
               </button>
+              )}
             </div>
 
+            {noClickMessage && (
+              <div className="absolute inset-x-0 flex justify-center" style={{ top: '50%' }}>
+                <div className="bg-white/90 backdrop-blur-sm text-rose-600 font-semibold px-6 py-3 rounded-full shadow-lg border border-rose-200 animate-[fadeIn_0.3s_ease-out]">
+                  {noClickMessage}
+                </div>
+              </div>
+            )}
+
             <p className="mt-12 sm:mt-16 text-sm text-rose-700 italic bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 inline-block border border-white/40">
-              (Try clicking "No" if you dare... 😏)
+              {config.valentine.hintText} 😏
             </p>
           </div>
         </div>
