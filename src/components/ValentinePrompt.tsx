@@ -13,6 +13,7 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
   const [noButtonOpacity, setNoButtonOpacity] = useState(1);
   const [isYesClicked, setIsYesClicked] = useState(false);
   const [noClickCount, setNoClickCount] = useState(0);
+  const [noClickMessage, setNoClickMessage] = useState<string | null>(null);
   const noButtonRef = useRef<HTMLButtonElement>(null);
   const buttonContainerRef = useRef<HTMLDivElement>(null);
   const scaleIntervalRef = useRef<number | null>(null);
@@ -215,6 +216,37 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
     };
   }, []);
 
+  const NO_CLICK_MESSAGES = [
+    "Nice try! But the answer is Yes! 😏",
+    "Oops! Wrong button! 😄",
+    "Are you sure? Think again! 💕",
+    "That button doesn't work here! 😘",
+    "The only answer is Yes! 💖",
+  ];
+
+  const handleNoClick = () => {
+    const message = NO_CLICK_MESSAGES[noClickCount % NO_CLICK_MESSAGES.length];
+    setNoClickMessage(message!);
+    setNoClickCount(prev => prev + 1);
+
+    // Move the button to a random position within the container
+    if (buttonContainerRef.current && noButtonRef.current) {
+      const containerRect = buttonContainerRef.current.getBoundingClientRect();
+      const buttonRect = noButtonRef.current.getBoundingClientRect();
+      const padding = 20;
+      const maxX = containerRect.width - buttonRect.width - padding;
+      const maxY = containerRect.height - buttonRect.height - padding;
+      const newX = padding + Math.random() * Math.max(0, maxX - padding);
+      const newY = padding + Math.random() * Math.max(0, maxY - padding);
+      setNoButtonPosition({ x: newX, y: newY });
+    }
+
+    // Clear the message after 2 seconds
+    setTimeout(() => {
+      setNoClickMessage(null);
+    }, 2000);
+  };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     moveNoButton(e.clientX, e.clientY);
   };
@@ -277,6 +309,7 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
               <button
                 ref={noButtonRef}
                 type="button"
+                onClick={handleNoClick}
                 onMouseMove={handleMouseMove}
                 onTouchStart={handleTouchStart}
                 onTouchMove={(e: React.TouchEvent) => {
@@ -304,6 +337,14 @@ export function ValentinePrompt({ onYes }: ValentinePromptProps) {
                 No
               </button>
             </div>
+
+            {noClickMessage && (
+              <div className="absolute inset-x-0 flex justify-center" style={{ top: '50%' }}>
+                <div className="bg-white/90 backdrop-blur-sm text-rose-600 font-semibold px-6 py-3 rounded-full shadow-lg border border-rose-200 animate-[fadeIn_0.3s_ease-out]">
+                  {noClickMessage}
+                </div>
+              </div>
+            )}
 
             <p className="mt-12 sm:mt-16 text-sm text-rose-700 italic bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 inline-block border border-white/40">
               (Try clicking "No" if you dare... 😏)
