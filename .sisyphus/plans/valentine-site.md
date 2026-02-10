@@ -288,7 +288,7 @@ Parallel Speedup: ~50% faster than sequential
   - [ ] TypeScript compiles: `bunx tsc --noEmit` → exit code 0
   - [ ] Tailwind configured: `tailwind.config.js` exists
   - [ ] Vite config has base path: `grep "base: '/valentine-2026/'" vite.config.ts` → match found
-  - [ ] Env template exists: `.env.example` contains VITE_EMAILJS placeholders
+  - [ ] Env template exists: `.env.example` contains EMAILJS placeholders
   - [ ] Dev server starts: `bun run dev` (kill after 3 seconds) → no fatal errors
 
   **Agent-Executed QA Scenarios**:
@@ -613,7 +613,7 @@ Parallel Speedup: ~50% faster than sequential
 
   - [ ] EmailJS utility exists: `src/utils/emailjs.ts` exports `sendQuizAnswers` function
   - [ ] Setup guide exists: `SETUP_EMAILJS.md` contains step-by-step instructions
-  - [ ] Env example updated: `.env.example` contains all VITE_EMAILJS_* variables
+  - [ ] Env example updated: `.env.example` contains all EMAILJS_* variables
   - [ ] TypeScript compiles: `bunx tsc --noEmit` → exit code 0
   - [ ] No hardcoded credentials: `grep -E "(service_[a-z0-9]+|template_[a-z0-9]+)" src/utils/emailjs.ts` → no matches (
     only env var references)
@@ -648,7 +648,7 @@ Parallel Speedup: ~50% faster than sequential
     Tool: Bash
     Preconditions: .env.example updated
     Steps:
-      1. Run: grep "VITE_EMAILJS" .env.example | wc -l
+      1. Run: grep "EMAILJS" .env.example | wc -l
       2. Assert: Exactly 3 lines (SERVICE_ID, TEMPLATE_ID, PUBLIC_KEY)
     Expected Result: All EmailJS env vars documented
     Evidence: grep count

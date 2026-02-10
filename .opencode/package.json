@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@opencode-ai/plugin": "1.1.53",
+    "@opencode-ai/plugin": "1.1.54",
     "oh-my-opencode-darwin-arm64": "^3.2.4"
   }
 }

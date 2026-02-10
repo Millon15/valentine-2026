@@ -1,26 +1,6 @@
 import { useEffect } from 'react';
 import type { Dispatch } from 'react';
-
-type Step = 'intro' | 'question' | 'score' | 'letter' | 'valentine';
-
-interface QuizState {
-  step: Step;
-  questionIndex: number;
-  answers: string[];
-  emailSent: boolean;
-}
-
-type QuizAction =
-  | { type: 'START_QUIZ' }
-  | { type: 'ANSWER_QUESTION'; letterSegment: string }
-  | { type: 'NEXT_QUESTION' }
-  | { type: 'PREVIOUS_QUESTION' }
-  | { type: 'SHOW_SCORE' }
-  | { type: 'SHOW_LETTER' }
-  | { type: 'SHOW_VALENTINE' }
-  | { type: 'MARK_EMAIL_SENT' }
-  | { type: 'RESTORE_STATE'; state: QuizState }
-  | { type: 'NAVIGATE_TO'; step: Step; questionIndex: number };
+import type { QuizState, QuizAction, Step } from '../types/Quiz';
 
 /**
  * Converts quiz state to URL hash string.

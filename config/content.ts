@@ -6,7 +6,7 @@ export const questions: Question[] = [
     type: 'multipleChoice',
     question: 'What caught your attention about us so far?',
     designVariant: 'gradient-rose',
-    videoSrc: 'videos/1-a-ha - Take On Me.mp4',
+    videoSrc: 'videos/1-a-ha-take-on-me.mp4',
     options: [
       {
         text: 'The way our conversations just flow',
@@ -45,7 +45,7 @@ export const questions: Question[] = [
     type: 'yesNo',
     question: 'Do you think we\'ve got something special starting here?',
     designVariant: 'romantic-purple',
-    videoSrc: 'videos/2-George Michael - Careless Whisper.mp4',
+    videoSrc: 'videos/2-George-Michael-Careless-Whisper.mp4',
     options: [
       {
         value: 'yes',
@@ -92,7 +92,7 @@ export const questions: Question[] = [
     type: 'multipleChoice',
     question: 'What do you like most about how we vibe?',
     designVariant: 'love-bubbles',
-    videoSrc: 'videos/3-Earth, Wind & Fire - September.mp4',
+    videoSrc: 'videos/3-Earth-Wind-Fire-September.mp4',
     options: [
       {
         text: 'We never run out of things to talk about',

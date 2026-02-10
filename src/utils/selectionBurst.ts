@@ -66,7 +66,7 @@ function sparkleAt(x: number, y: number) {
     const size = 10 + Math.random() * 6;
     const delay = i * 40;
 
-    star.textContent = stars[i % stars.length];
+    star.textContent = stars[i % stars.length] ?? null;
     star.style.cssText = `
       position: fixed;
       left: ${x}px;
@@ -123,7 +123,7 @@ export function triggerSelectionSequence(element: HTMLElement, clickX: number, c
   setTimeout(() => {
     sparkleAt(rect.left - margin, edgeY);
     sparkleAt(rect.right + margin, edgeY);
-  }, 400);
+  }, 550);
 }
 
 /**
@@ -146,7 +146,7 @@ export function triggerFloatingHearts(element: HTMLElement) {
     const heartChar = hearts[i % hearts.length];
     const delay = i * 60;
 
-    heart.textContent = heartChar;
+    heart.textContent = heartChar ?? null;
     heart.style.cssText = `
       position: fixed;
       left: ${centerX + (Math.random() - 0.5) * 20}px;

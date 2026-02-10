@@ -1,114 +1,97 @@
+# Valentine's Day Quiz 2026 - Project Documentation
 
-## Bun
+## Project Overview
 
-Default to using Bun instead of Node.js.
+A white-label, interactive Valentine's Day quiz built with React, Vite, and Tailwind CSS. It generates a personalized
+love letter based on the recipient's answers.
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Use `bunx <package> <command>` instead of `npx <package> <command>`
-- Bun automatically loads .env, so don't use dotenv.
+## Architecture
 
-## SCSS
+### Directory Structure
 
-Use `scss` instead of either plain `css` or `less` or `sass` for stylesheets.
-Use Bun's built-in SCSS support. Don't use `sass` or `node-sass`.
-Use `scss`, not `sass` as the file extension for SCSS files, to avoid conflicts with the `sass` package.
+- **`config/`**: Centralized configuration.
+  - `config.ts`: White-label settings (names, UI text).
+  - `content.ts`: Quiz questions, answers, video links.
+- **`src/`**: Application source code.
+  - **`components/`**: React UI components (Screens, Questions, etc.).
+  - **`hooks/`**: Custom React hooks (`useQuizNavigation`, `useQuizPersistence`).
+  - **`utils/`**: Helper functions (`confetti.ts`, `emailjs.ts`).
+  - **`styles/`**: Tailwind variants and theme configurations.
+  - **`__tests__/`**: Unit and integration tests.
+- **`public/`**: Static assets (videos, images).
+- **`email-templates/`**: HTML templates for EmailJS.
 
-## APIs
+### Key Logic
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+- **Entry Point**: `src/main.tsx`
+- **Main App**: `src/App.tsx` (Handles routing between screens: Intro -> Quiz -> Score -> Letter -> Valentine)
+- **State Management**: React `useState` + `useQuizPersistence` (localStorage).
+- **Styling**: Tailwind CSS v4. Design variants defined in `src/styles/questionVariants.ts`.
 
-## Testing
+## Tech Stack
 
-Use `bun test` to run tests.
+- **Runtime**: Bun
+- **Framework**: React 19
+- **Build Tool**: Vite 7
+- **Styling**: Tailwind CSS 4
+- **Testing**: Vitest
+- **Language**: TypeScript
 
-```ts#index.test.ts
-import { test, expect } from "bun:test";
+## Commands
 
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+### Development
+
+```bash
+# Start dev server
+bun run dev
+
+# Run tests
+bun run test
+bun run test --watch
 ```
 
-## Frontend
+### Build & Preview
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+```bash
+# Build for production
+bun run build
 
-Server:
-
-```ts#index.ts
-import index from "./index.html"
-
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
+# Preview production build
+bun run preview
 ```
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
+### Package Management
 
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
+- Use `bun install` (not npm/yarn).
+- Use `bun add <package>` to add dependencies.
 
-With the following `frontend.tsx`:
+## Conventions
 
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
+### Coding Style
 
-// import .css files directly and it works
-import './index.css';
+- **React**: Functional components with Hooks.
+- **Styling**: Utility-first with Tailwind. Use `src/styles/questionVariants.ts` for thematic consistency.
+- **Config**: HARD REQUIREMENT: All user-facing text must be in `config/config.ts`. Do not hardcode strings in
+  components.
+- **Imports**: Use relative imports.
 
-const root = createRoot(document.body);
+### Testing
 
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
+- Place component tests in `src/__tests__` or `src/components/__tests__`.
+- Use `screen` and `userEvent` from `@testing-library/react`.
+- Run tests with `bun test`.
 
-root.render(<Frontend />);
-```
+### Deployment
 
-Then, run index.ts
+- **GitHub Pages**: Deployed automatically via GitHub Actions on push to `master`.
+- **Base URL**: Configured in `vite.config.ts` as `base: '/valentine-2026/'`.
 
-```sh
-bun --hot ./index.ts
-```
+## Configuration
 
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+- **EmailJS**: Setup keys in `.env` (see `README.md` for details).
+- **Videos**: Place in `public/videos/` and reference in `config/content.ts`.
+
+## Environment Notes
+
+- **Bun**: Use `bun` for all script executions.
+- **Env Vars**: Bun automatically loads `.env`.

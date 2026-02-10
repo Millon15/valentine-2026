@@ -4,7 +4,8 @@ This guide walks you through setting up EmailJS to send quiz answers from the Va
 
 ## Overview
 
-EmailJS allows you to send emails directly from your web application without a backend server. The quiz uses EmailJS to send user responses to your email address.
+EmailJS allows you to send emails directly from your web application without a backend server. The quiz uses EmailJS to
+send user responses to your email address.
 
 ## Step 1: Create a Free EmailJS Account
 
@@ -33,8 +34,8 @@ EmailJS needs to know which email service to use (Gmail, Outlook, etc.).
 
 1. In the EmailJS dashboard, click **"Email Services"**
 2. Click **"Add Service"**
-3. Select **"Outlook 365"** from the list
-4. Enter your Outlook email and password
+3. Select **"Gmail"** from the list
+4. Enter your Gmail and password
 5. Copy the **Service ID**
 6. Save it for later (Step 4)
 
@@ -54,38 +55,9 @@ Email templates define how the quiz answers will be formatted in the email.
 1. In the EmailJS dashboard, click **"Email Templates"** (left sidebar)
 2. Click **"Create New Template"**
 3. Give it a name (e.g., "Quiz Answers")
-4. Copy the **Template ID** (looks like `template_xyz789abc123`)
-5. Save it for later (Step 4)
-
-### Template Content Example
-
-In the template editor, use these variables to display quiz data:
-
-```
-Subject: New Quiz Submission from {{user_name}}
-
-Hello,
-
-You have a new quiz submission:
-
-User Name: {{user_name}}
-User Email: {{user_email}}
-Submitted At: {{timestamp}}
-
-Answers:
-{{answers}}
-
----
-This email was sent from the Valentine's 2026 Quiz Application.
-```
-
-**Available Variables:**
-- `{{user_name}}` - Name of the person who took the quiz
-- `{{user_email}}` - Their email address
-- `{{answers}}` - The quiz answers (formatted as JSON or text)
-- `{{timestamp}}` - When they submitted the quiz
-
-You can customize the template however you like. The application will send these variables automatically.
+4. Paste the contents of `email-templates/quiz-answers.html` into the **HTML Content** editor
+5. Copy the **Template ID** (looks like `template_xyz789abc123`)
+6. Don't forget to **Save** it via small blue button somewhere in the right!
 
 ## Step 4: Get Your Public Key
 
@@ -98,19 +70,18 @@ You can customize the template however you like. The application will send these
 
 1. In the project root, create or edit the `.env` file (if it doesn't exist)
 2. Add these three lines:
-
-```
-EMAILJS_SERVICE_ID=your_service_id_here
-EMAILJS_TEMPLATE_ID=your_template_id_here
-EMAILJS_PUBLIC_KEY=your_public_key_here
-```
-
+   ```
+   EMAILJS_SERVICE_ID=your_service_id_here
+   EMAILJS_TEMPLATE_ID=your_template_id_here
+   EMAILJS_PUBLIC_KEY=your_public_key_here
+   ```
 3. Replace the placeholder values with your actual IDs from Steps 2, 3, and 4:
    - `your_service_id_here` → Your Service ID (e.g., `service_abc123`)
    - `your_template_id_here` → Your Template ID (e.g., `template_xyz789`)
    - `your_public_key_here` → Your Public Key (e.g., `pk_abc123xyz789`)
 
 **Example:**
+
 ```
 EMAILJS_SERVICE_ID=service_a1b2c3d4e5f6g7h8
 EMAILJS_TEMPLATE_ID=template_x9y8z7w6v5u4t3s2
@@ -122,7 +93,7 @@ EMAILJS_PUBLIC_KEY=pk_live_abc123xyz789def456ghi789
 After updating `.env`, restart your development server:
 
 ```bash
-bun run index.ts
+bun run dev
 ```
 
 The application will now send quiz answers to your email when users submit the quiz.
@@ -134,6 +105,7 @@ The application will now send quiz answers to your email when users submit the q
 **Problem:** You see this warning in the browser console.
 
 **Solution:** Make sure all three environment variables are set in `.env`:
+
 - `EMAILJS_SERVICE_ID`
 - `EMAILJS_TEMPLATE_ID`
 - `EMAILJS_PUBLIC_KEY`
@@ -145,6 +117,7 @@ Restart your dev server after updating `.env`.
 **Problem:** Quiz submissions complete but emails don't arrive.
 
 **Possible causes:**
+
 1. Check your email spam/junk folder
 2. Verify the email service is connected in EmailJS dashboard
 3. Check the browser console for error messages (F12 → Console tab)
@@ -154,7 +127,8 @@ Restart your dev server after updating `.env`.
 
 **Problem:** You see this error in the console.
 
-**Solution:** Double-check that your Service ID in `.env` matches exactly what's shown in the EmailJS dashboard. Copy and paste to avoid typos.
+**Solution:** Double-check that your Service ID in `.env` matches exactly what's shown in the EmailJS dashboard. Copy
+and paste to avoid typos.
 
 ### "Template not found" Error
 
@@ -190,6 +164,7 @@ If you don't receive an email, check the browser console (F12) for error message
 ## Free Tier Limits
 
 EmailJS offers a free tier with these limits:
+
 - 200 emails per month
 - Unlimited email templates
 - Unlimited email services
@@ -199,6 +174,7 @@ If you exceed the free tier, you can upgrade to a paid plan in your EmailJS acco
 ## Support
 
 For more information about EmailJS:
+
 - [EmailJS Documentation](https://www.emailjs.com/docs/)
 - [EmailJS SDK Reference](https://www.emailjs.com/docs/sdk/send/)
 - [EmailJS Support](https://www.emailjs.com/support/)

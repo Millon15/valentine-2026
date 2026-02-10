@@ -20,6 +20,8 @@ export function ValentinePrompt({ onYes, hideNoButton }: ValentinePromptProps) {
   const buttonContainerRef = useRef<HTMLDivElement>(null);
   const scaleIntervalRef = useRef<number | null>(null);
   const flickerIntervalRef = useRef<number | null>(null);
+  const countRef = useRef(0);
+  const messageTimerRef = useRef<number | null>(null);
 
   const handleYesClick = () => {
     setIsYesClicked(true);
@@ -88,7 +90,8 @@ export function ValentinePrompt({ onYes, hideNoButton }: ValentinePromptProps) {
     if (distance < DODGE_THRESHOLD_PX) {
       if (!isChasing) {
         setIsChasing(true);
-        setNoClickCount(prev => prev + 1);
+        countRef.current += 1;
+        setNoClickCount(countRef.current);
         startSizeAnimation();
         startPoliceFlicker();
       }
@@ -172,15 +175,21 @@ export function ValentinePrompt({ onYes, hideNoButton }: ValentinePromptProps) {
     return () => {
       cleanupSizeAnimation();
       cleanupPoliceFlicker();
+      if (messageTimerRef.current) {
+        clearTimeout(messageTimerRef.current);
+      }
     };
   }, []);
 
   const NO_CLICK_MESSAGES = config.valentine.noClickMessages;
 
   const handleNoClick = () => {
-    const message = NO_CLICK_MESSAGES[noClickCount % NO_CLICK_MESSAGES.length];
+    const currentCount = countRef.current;
+    const message = NO_CLICK_MESSAGES[currentCount % NO_CLICK_MESSAGES.length];
     setNoClickMessage(message!);
-    setNoClickCount(prev => prev + 1);
+    
+    countRef.current += 1;
+    setNoClickCount(countRef.current);
 
     // Move the button to a random position within the container
     if (buttonContainerRef.current && noButtonRef.current) {
@@ -195,8 +204,13 @@ export function ValentinePrompt({ onYes, hideNoButton }: ValentinePromptProps) {
     }
 
     // Clear the message after 2 seconds
-    setTimeout(() => {
+    if (messageTimerRef.current) {
+      clearTimeout(messageTimerRef.current);
+    }
+    
+    messageTimerRef.current = window.setTimeout(() => {
       setNoClickMessage(null);
+      messageTimerRef.current = null;
     }, 2000);
   };
 
