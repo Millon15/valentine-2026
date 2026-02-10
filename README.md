@@ -5,21 +5,46 @@ answers. Built with React, Vite, and Tailwind CSS.
 
 **Fork it, customize it, deploy to your own Github Pages — send it to your loved one!!!**
 
-## Quick How-to Guide
+[Русский](./docs/translations/README_RU.md) | [中文](./docs/translations/README_CN.md)
 
-Follow these steps to create your own personalized Valentine's Day quiz.
+## 🚀 The "One-Shot Nerd" Setup (Fastest & Coolest)
+
+**Use AI to build it for you!
+Less then 15 minutes to receive a personalized Valentine's Day quiz website on Github Pages!**
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/<your-username>/valentine-2026.git
+cd valentine-2026
+bun install
+```
+
+### 2. Summon Your Agent 🤖
+
+Tell your AI Agent (like Claude, Cursor or OpenCode):
+
+> Ask me 5=10 questions about my partner (names, favorite memories, inside jokes) to customize the Valentine's Day quiz.
+> Wait for my answers, then regenerate the files in `config/` with personalized content and run the local dev server.
+
+### 3. Run Locally
+
+```bash
+# Start development server
+bun run dev
+```
+
+---
+
+## Manual Setup Guide
+
+If you prefer to edit files manually or **edit directly on GitHub**.
 
 ### 1. Fork & Setup
 
 1. **Fork this repository** to your own GitHub account.
 2. **(Optional) Edit directly on GitHub**: You can edit the `config/` files directly in your browser (even on mobile!)
-   without installing anything.
-3. Or clone locally if you prefer:
-   ```bash
-   git clone https://github.com/<your-username>/valentine-2026.git
-   cd valentine-2026
-   bun install
-   ```
+   without installing anything. **This is the easiest way!**
 
 ### 2. Personalize
 

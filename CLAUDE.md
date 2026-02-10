@@ -1,5 +1,7 @@
 # Valentine's Day Quiz 2026 - Project Documentation
 
+[Русский](docs/translations/CLAUDE_RU.md) | [中文](docs/translations/CLAUDE_CN.md)
+
 ## Project Overview
 
 A white-label, interactive Valentine's Day quiz built with React, Vite, and Tailwind CSS. It generates a personalized

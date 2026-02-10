@@ -1,5 +1,7 @@
 # EmailJS Setup Guide
 
+[Русский](../../docs/translations/email-templates/SETUP_RU.md) | [中文](../../docs/translations/email-templates/SETUP_CN.md)
+
 This guide walks you through setting up EmailJS to send quiz answers from the Valentine's 2026 quiz application.
 
 ## Overview

@@ -1,5 +1,7 @@
 # EmailJS Template
 
+[Русский](../../docs/translations/email-templates/README_RU.md) | [中文](../../docs/translations/email-templates/README_CN.md)
+
 This directory contains the HTML email template and setup documentation for the Valentine's Day Quiz app.
 
 ## Files
