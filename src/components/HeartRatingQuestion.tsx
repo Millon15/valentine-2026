@@ -21,6 +21,7 @@ export const HeartRatingQuestion: React.FC<HeartRatingQuestionProps> = ({
   onAnswer,
 }) => {
   const [hoveredHearts, setHoveredHearts] = useState<number | null>(null);
+  const [animatingSegment, setAnimatingSegment] = useState<string | null>(null);
 
   const getOptionForHearts = (hearts: number) => {
     return question.options.find(opt => opt.hearts === hearts);
@@ -32,21 +33,32 @@ export const HeartRatingQuestion: React.FC<HeartRatingQuestionProps> = ({
 
   const activeHearts = hoveredHearts ?? selectedHearts;
 
+  const handleClick = (letterSegment: string) => {
+    setAnimatingSegment(letterSegment);
+    onAnswer(letterSegment);
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8">
       <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4">
         {Array.from({ length: question.maxHearts }, (_, i) => i + 1).map((hearts) => {
           const option = getOptionForHearts(hearts);
           const isFilled = activeHearts !== null && hearts <= activeHearts;
+          const isAnimating = option !== undefined && animatingSegment === option.letterSegment;
 
           return (
             <button
               key={hearts}
               type="button"
-              onClick={() => option && onAnswer(option.letterSegment)}
+              onClick={() => option && handleClick(option.letterSegment)}
               onMouseEnter={() => setHoveredHearts(hearts)}
               onMouseLeave={() => setHoveredHearts(null)}
-              className="cursor-pointer"
+              onAnimationEnd={() => {
+                if (option && animatingSegment === option.letterSegment) {
+                  setAnimatingSegment(null);
+                }
+              }}
+              className={`cursor-pointer ${isAnimating ? 'animate-[selection-celebrate_0.6s_ease-out]' : ''}`}
               aria-label={`Rate ${hearts} out of ${question.maxHearts} hearts`}
             >
               <svg

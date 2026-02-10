@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { EmojiReactionQuestion as EmojiReactionQuestionType } from '../types/Question';
 
 interface EmojiReactionQuestionProps {
@@ -12,22 +12,35 @@ export const EmojiReactionQuestion: React.FC<EmojiReactionQuestionProps> = ({
   selectedAnswer,
   onAnswer,
 }) => {
+  const [animatingSegment, setAnimatingSegment] = useState<string | null>(null);
+
+  const handleClick = (letterSegment: string) => {
+    setAnimatingSegment(letterSegment);
+    onAnswer(letterSegment);
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
         {question.options.map((option) => {
           const isSelected = selectedAnswer === option.letterSegment;
+          const isAnimating = animatingSegment === option.letterSegment;
 
           return (
             <button
               key={option.letterSegment}
               type="button"
-              onClick={() => onAnswer(option.letterSegment)}
+              onClick={() => handleClick(option.letterSegment)}
+              onAnimationEnd={() => {
+                if (animatingSegment === option.letterSegment) {
+                  setAnimatingSegment(null);
+                }
+              }}
               className={`group relative px-4 py-6 sm:px-5 sm:py-8 rounded-2xl border-2 transition-all duration-300 ${
                 isSelected
                   ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-200/50 scale-105'
                   : 'border-gray-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50 hover:scale-102 hover:shadow-md'
-              }`}
+              } ${isAnimating ? 'animate-[selection-celebrate_0.6s_ease-out]' : ''}`}
             >
               <div className="flex flex-col items-center gap-2 sm:gap-3">
                 <span className={`text-4xl sm:text-5xl transition-transform duration-300 ${

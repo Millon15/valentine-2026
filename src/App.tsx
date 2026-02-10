@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useRef } from 'react';
 import { IntroScreen } from './components/IntroScreen';
 import { ProgressBar } from './components/ProgressBar';
 import { QuestionCard } from './components/QuestionCard';
@@ -76,15 +76,9 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
        const newAnswers = [...state.answers];
        newAnswers[state.questionIndex] = action.letterSegment;
 
-       // Auto-advance: if not the last question, move to next
-       const isLastQuestion = state.questionIndex === questions.length - 1;
-       
        return {
          ...state,
          answers: newAnswers,
-         questionIndex: isLastQuestion ? state.questionIndex : state.questionIndex + 1,
-         step: isLastQuestion ? 'score' : 'question',
-         emailSent: state.emailSent,
        };
      }
 
@@ -153,6 +147,7 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
 
 export default function App() {
    const [state, dispatch] = useReducer(quizReducer, initialState);
+   const advanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
    useQuizPersistence(state, dispatch);
    useQuizNavigation(state, dispatch);
 
@@ -160,15 +155,34 @@ export default function App() {
      initializeEmailJS();
    }, []);
 
+   useEffect(() => {
+     return () => {
+       if (advanceTimerRef.current) {
+         clearTimeout(advanceTimerRef.current);
+       }
+     };
+   }, []);
+
   const handleStart = () => {
     dispatch({ type: 'START_QUIZ' });
   };
 
   const handleAnswer = (letterSegment: string) => {
+    if (advanceTimerRef.current) {
+      clearTimeout(advanceTimerRef.current);
+    }
     dispatch({ type: 'ANSWER_QUESTION', letterSegment });
+    advanceTimerRef.current = setTimeout(() => {
+      advanceTimerRef.current = null;
+      dispatch({ type: 'NEXT_QUESTION' });
+    }, 1600);
   };
 
   const handleBack = () => {
+    if (advanceTimerRef.current) {
+      clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
     dispatch({ type: 'PREVIOUS_QUESTION' });
   };
 
@@ -198,6 +212,7 @@ export default function App() {
          >
           {currentQuestion.type === 'multipleChoice' && (
             <MultipleChoiceQuestion
+              key={state.questionIndex}
               question={currentQuestion}
               selectedAnswer={currentAnswer}
               onAnswer={handleAnswer}
@@ -206,6 +221,7 @@ export default function App() {
 
           {currentQuestion.type === 'heartRating' && (
             <HeartRatingQuestion
+              key={state.questionIndex}
               question={currentQuestion}
               selectedAnswer={currentAnswer}
               onAnswer={handleAnswer}
@@ -214,6 +230,7 @@ export default function App() {
 
           {currentQuestion.type === 'yesNo' && (
             <YesNoQuestion
+              key={state.questionIndex}
               question={currentQuestion}
               selectedAnswer={currentAnswer}
               onAnswer={handleAnswer}
@@ -222,6 +239,7 @@ export default function App() {
 
           {currentQuestion.type === 'emojiReaction' && (
             <EmojiReactionQuestion
+              key={state.questionIndex}
               question={currentQuestion}
               selectedAnswer={currentAnswer}
               onAnswer={handleAnswer}
