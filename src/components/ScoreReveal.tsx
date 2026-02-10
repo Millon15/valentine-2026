@@ -1,8 +1,32 @@
+import { useState, useEffect } from 'react';
+
 interface ScoreRevealProps {
   onContinue: () => void;
 }
 
 export function ScoreReveal({ onContinue }: ScoreRevealProps) {
+  const [displayScore, setDisplayScore] = useState(0);
+
+  useEffect(() => {
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const increment = 100 / steps;
+    const stepTime = duration / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= 100) {
+        setDisplayScore(100);
+        clearInterval(timer);
+      } else {
+        setDisplayScore(Math.round(current));
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative overflow-hidden">
       {/* Animated background hearts */}
@@ -25,8 +49,8 @@ export function ScoreReveal({ onContinue }: ScoreRevealProps) {
                 {/* Glow effect behind score */}
                 <div className="absolute inset-0 blur-2xl bg-gradient-to-r from-rose-400 via-pink-400 to-rose-400 opacity-30 animate-pulse" />
                 
-                <div className="relative text-8xl sm:text-9xl font-bold bg-gradient-to-br from-rose-600 via-pink-500 to-rose-600 bg-clip-text text-transparent mb-4 animate-[scale-in_0.6s_ease-out]">
-                  100%
+                <div className="relative text-8xl sm:text-9xl font-bold bg-gradient-to-br from-rose-600 via-pink-500 to-rose-600 bg-clip-text text-transparent mb-4">
+                  {displayScore}%
                 </div>
                 <div className="absolute -top-4 -right-4 text-4xl animate-[bounce_1s_ease-in-out_infinite]">
                   💕
