@@ -37,7 +37,7 @@ describe('QuestionCard', () => {
         <div>Content</div>
       </QuestionCard>
     );
-    const decorations = container.querySelectorAll('[class*="animate-pulse"]');
+    const decorations = container.querySelectorAll('.absolute.inset-0 > div');
     expect(decorations.length).toBeGreaterThan(0);
   });
 

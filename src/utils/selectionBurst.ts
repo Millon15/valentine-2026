@@ -28,6 +28,11 @@ function burstAt(x: number, y: number) {
 
     document.body.appendChild(particle);
 
+    if (!particle.animate) {
+      particle.remove();
+      continue;
+    }
+
     const endX = Math.cos(angle) * distance;
     const endY = Math.sin(angle) * distance;
 
@@ -74,6 +79,11 @@ function sparkleAt(x: number, y: number) {
     `;
 
     document.body.appendChild(star);
+
+    if (!star.animate) {
+      star.remove();
+      continue;
+    }
 
     const endX = Math.cos(angle) * distance;
     const endY = Math.sin(angle) * distance;
@@ -149,6 +159,11 @@ export function triggerFloatingHearts(element: HTMLElement) {
     `;
 
     document.body.appendChild(heart);
+
+    if (!heart.animate) {
+      heart.remove();
+      continue;
+    }
 
     const animation = heart.animate(
       [
