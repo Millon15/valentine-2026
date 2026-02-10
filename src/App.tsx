@@ -17,6 +17,7 @@ import { triggerCelebration } from './utils/confetti';
 import { sendQuizAnswers, initializeEmailJS } from './utils/emailjs';
 import { useQuizPersistence } from './hooks/useQuizPersistence';
 import { useQuizNavigation } from './hooks/useQuizNavigation';
+import { config } from './config';
 import type { Question } from './types/Question';
 
 type Step = 'intro' | 'question' | 'score' | 'letter' | 'valentine';
@@ -286,17 +287,17 @@ export default function App() {
               .join('<br/><br/>');
 
             const loveLetterText = [
-              'Dear Tanya,',
+              `Dear ${config.recipientName},`,
               '',
               ...state.answers.filter(Boolean),
               '',
               'With all my love,',
-              'Forever yours Vitas \u2764\uFE0F',
+              `Forever yours ${config.senderName} \u2764\uFE0F`,
             ].join('\n');
 
             try {
               await sendQuizAnswers({
-                user_name: 'Tanya',
+                user_name: config.recipientName,
                 answers: answersHtml,
                 love_letter: loveLetterText,
                 no_count: String(noCount),

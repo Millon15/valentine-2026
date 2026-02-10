@@ -1,3 +1,5 @@
+import { config } from '../config';
+
 interface LoveLetterProps {
   letterSegments: string[];
   onContinue: () => void;
@@ -41,7 +43,7 @@ export function LoveLetter({ letterSegments, onContinue }: LoveLetterProps) {
                   className="text-xl font-serif text-rose-900 mb-6 font-medium animate-[fadeIn_0.6s_ease-out]"
                   style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
                 >
-                  Dear Tanya,
+                  Dear {config.recipientName},
                 </p>
 
                 {validSegments.map((segment, index) => (
@@ -62,7 +64,7 @@ export function LoveLetter({ letterSegments, onContinue }: LoveLetterProps) {
                     With all my love,
                   </p>
                   <p className="font-serif text-xl text-rose-900 mt-2 italic font-semibold">
-                    Forever yours Vitas ❤️
+                    Forever yours {config.senderName} ❤️
                   </p>
                 </div>
               </div>

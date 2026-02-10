@@ -1,4 +1,5 @@
 import React from 'react';
+import { config } from '../config';
 
 interface IntroScreenProps {
   onStart: () => void;
@@ -35,7 +36,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart }) => {
               Happy Valentine's Day
             </p>
 
-            {/* TANYA'S NAME - HUGE with decorations */}
+            {/* RECIPIENT NAME - HUGE with decorations */}
             <div className="relative py-6 sm:py-8">
               {/* Decorative hearts around name */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl sm:text-4xl animate-bounce">
@@ -54,13 +55,13 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart }) => {
                 💕
               </div>
 
-              {/* Tanya's name with liquid glass effect */}
+              {/* Recipient's name with liquid glass effect */}
               <div className="relative inline-block">
                 {/* Glow effect behind name */}
                 <div className="absolute inset-0 blur-2xl bg-gradient-to-r from-rose-400 via-pink-400 to-rose-400 opacity-30 animate-pulse" />
                 
                 <h1 className="relative text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold bg-gradient-to-br from-rose-600 via-pink-500 to-rose-600 bg-clip-text text-transparent drop-shadow-2xl tracking-tight animate-[scale-in_0.6s_ease-out] px-4 leading-[1.2]">
-                  Tanya
+                  {config.recipientName}
                 </h1>
                 
                 {/* Sparkle overlay */}
@@ -96,7 +97,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart }) => {
             </button>
 
             <p className="text-sm sm:text-base text-rose-600 mt-4 sm:mt-6 bg-white/30 backdrop-blur-sm rounded-full px-6 py-2 inline-block border border-white/40">
-              Takes about 2 minutes • Made with love by Vitas 💕
+              Takes about 2 minutes • Made with love by {config.senderName} 💕
             </p>
           </div>
         </div>
