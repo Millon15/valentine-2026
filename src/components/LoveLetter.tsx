@@ -37,17 +37,27 @@ export function LoveLetter({ letterSegments, onContinue }: LoveLetterProps) {
 
             <div className="bg-white/20 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/40 shadow-inner">
               <div className="prose prose-lg max-w-none leading-relaxed space-y-6">
-                <p className="text-xl font-serif text-rose-900 mb-6 font-medium">
+                <p
+                  className="text-xl font-serif text-rose-900 mb-6 font-medium animate-[fadeIn_0.6s_ease-out]"
+                  style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
+                >
                   Dear Tanya,
                 </p>
 
-                {validSegments.map((segment) => (
-                  <p key={segment.slice(0, 30)} className="font-serif text-rose-800 text-lg leading-relaxed">
+                {validSegments.map((segment, index) => (
+                  <p
+                    key={segment.slice(0, 30)}
+                    className="font-serif text-rose-800 text-lg leading-relaxed animate-[fadeIn_0.6s_ease-out]"
+                    style={{ animationDelay: `${(index + 1) * 0.4}s`, animationFillMode: 'both' }}
+                  >
                     {segment}
                   </p>
                 ))}
 
-                <div className="mt-8 pt-6 border-t border-rose-300/50">
+                <div
+                  className="mt-8 pt-6 border-t border-rose-300/50 animate-[fadeIn_0.6s_ease-out]"
+                  style={{ animationDelay: `${(validSegments.length + 1) * 0.4}s`, animationFillMode: 'both' }}
+                >
                   <p className="font-serif text-lg text-rose-900 font-medium">
                     With all my love,
                   </p>
