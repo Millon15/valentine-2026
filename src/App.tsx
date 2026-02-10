@@ -186,6 +186,14 @@ export default function App() {
     dispatch({ type: 'PREVIOUS_QUESTION' });
   };
 
+  const handleAdvance = () => {
+    if (advanceTimerRef.current) {
+      clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
+    dispatch({ type: 'NEXT_QUESTION' });
+  };
+
   const currentQuestion = questions[state.questionIndex];
   const currentAnswer = state.answers[state.questionIndex] ?? null;
 
@@ -248,8 +256,10 @@ export default function App() {
 
           <NavigationButtons
             onBack={handleBack}
+            onNext={handleAdvance}
             showBack={state.questionIndex > 0}
-            showNext={false}
+            showNext={true}
+            nextDisabled={currentAnswer === null}
           />
         </QuestionCard>
         <Footer />
