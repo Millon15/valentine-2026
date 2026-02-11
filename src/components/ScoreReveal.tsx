@@ -29,20 +29,20 @@ export function ScoreReveal({ onContinue }: ScoreRevealProps) {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 dark:from-slate-950 dark:via-gray-900 dark:to-slate-950 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative overflow-hidden transition-colors duration-500">
       {/* Floating background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 text-6xl animate-[float-1_8s_ease-in-out_infinite]">💕</div>
-        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 text-5xl animate-[float-2_10s_ease-in-out_infinite]" style={{ animationDelay: '1s' }}>✨</div>
-        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 text-5xl animate-[float-3_9s_ease-in-out_infinite]" style={{ animationDelay: '2s' }}>💖</div>
-        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 text-6xl animate-[float-1_11s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }}>💝</div>
+        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 dark:opacity-10 text-6xl animate-[float-1_8s_ease-in-out_infinite]">💕</div>
+        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 dark:opacity-10 text-5xl animate-[float-2_10s_ease-in-out_infinite]" style={{ animationDelay: '1s' }}>✨</div>
+        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 dark:opacity-10 text-5xl animate-[float-3_9s_ease-in-out_infinite]" style={{ animationDelay: '2s' }}>💖</div>
+        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 dark:opacity-10 text-6xl animate-[float-1_11s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }}>💝</div>
       </div>
 
       <div className="max-w-2xl w-full relative z-10">
         {/* Liquid glass card */}
-        <div className="bg-white/40 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 sm:p-12 border border-white/60 relative overflow-hidden">
+        <div className="bg-white/40 dark:bg-white/[0.07] backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 dark:shadow-black/30 p-8 sm:p-12 border border-white/60 dark:border-white/[0.12] relative overflow-hidden transition-colors duration-500">
           {/* Glass reflection effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/30 dark:from-white/[0.08] via-transparent to-transparent pointer-events-none" />
           
           <div className="text-center relative">
             <div className="mb-8">
@@ -62,12 +62,12 @@ export function ScoreReveal({ onContinue }: ScoreRevealProps) {
               </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-bold text-rose-900 mb-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-rose-900 dark:text-rose-100 mb-4">
               {config.scoreReveal.title}
             </h1>
             
-            <div className="bg-white/20 backdrop-blur-md rounded-2xl p-6 border border-white/40 shadow-inner mb-8">
-              <p className="text-lg sm:text-xl text-rose-900 leading-relaxed font-medium">
+            <div className="bg-white/20 dark:bg-white/[0.06] backdrop-blur-md rounded-2xl p-6 border border-white/40 dark:border-white/[0.08] shadow-inner mb-8">
+              <p className="text-lg sm:text-xl text-rose-900 dark:text-rose-100 leading-relaxed font-medium">
                 {config.scoreReveal.message}
               </p>
             </div>

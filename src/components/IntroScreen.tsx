@@ -1,38 +1,51 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { config } from '../../config/config';
+import { questions } from '../../config/content';
 
 interface IntroScreenProps {
   onStart: () => void;
 }
 
 export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart }) => {
+  // Preload quiz videos via <link> tags injected into head
+  useEffect(() => {
+    const links: HTMLLinkElement[] = [];
+
+    questions.forEach(q => {
+      if (q.videoSrc) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'video';
+        link.href = import.meta.env.BASE_URL + q.videoSrc;
+        document.head.appendChild(link);
+        links.push(link);
+      }
+    });
+
+    return () => {
+      links.forEach(link => document.head.removeChild(link));
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 dark:from-slate-950 dark:via-gray-900 dark:to-slate-950 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative overflow-hidden transition-colors duration-500">
       {/* Floating background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 text-6xl animate-[float-1_8s_ease-in-out_infinite]">💕</div>
-        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 text-5xl animate-[float-2_10s_ease-in-out_infinite]" style={{ animationDelay: '1s' }}>✨</div>
-        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 text-5xl animate-[float-3_9s_ease-in-out_infinite]" style={{ animationDelay: '2s' }}>💖</div>
-        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 text-6xl animate-[float-1_11s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }}>💝</div>
-      </div>
-
-      {/* Hidden video preload for slow connections */}
-      <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-        <video preload="auto" src={import.meta.env.BASE_URL + 'videos/1-cat-piano.webm'} />
-        <video preload="auto" src={import.meta.env.BASE_URL + 'videos/2-cat-funny-clip.webm'} />
-        <video preload="auto" src={import.meta.env.BASE_URL + 'videos/3-cat-japanese.webm'} />
-        <video preload="auto" src={import.meta.env.BASE_URL + 'videos/4-tyn-tyn.webm'} />
+        <div className="absolute top-[10%] left-[5%] text-rose-300 opacity-20 dark:opacity-10 text-6xl animate-[float-1_8s_ease-in-out_infinite]">💕</div>
+        <div className="absolute top-[20%] right-[10%] text-pink-300 opacity-20 dark:opacity-10 text-5xl animate-[float-2_10s_ease-in-out_infinite]" style={{ animationDelay: '1s' }}>✨</div>
+        <div className="absolute bottom-[15%] left-[15%] text-rose-300 opacity-20 dark:opacity-10 text-5xl animate-[float-3_9s_ease-in-out_infinite]" style={{ animationDelay: '2s' }}>💖</div>
+        <div className="absolute bottom-[25%] right-[8%] text-pink-300 opacity-20 dark:opacity-10 text-6xl animate-[float-1_11s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }}>💝</div>
       </div>
 
       <div className="max-w-2xl w-full relative z-10">
         {/* Liquid glass card */}
-        <div className="bg-white/40 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 sm:p-12 lg:p-16 border border-white/60 relative overflow-hidden">
+        <div className="bg-white/40 dark:bg-white/[0.07] backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 dark:shadow-black/30 p-8 sm:p-12 lg:p-16 border border-white/60 dark:border-white/[0.12] relative overflow-hidden transition-colors duration-500">
           {/* Glass reflection effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/30 dark:from-white/[0.08] via-transparent to-transparent pointer-events-none" />
           
           <div className="text-center space-y-4 sm:space-y-6 relative">
             {/* Subtitle */}
-            <p className="text-lg sm:text-xl text-rose-700 font-medium tracking-wide">
+            <p className="text-lg sm:text-xl text-rose-700 dark:text-rose-300 font-medium tracking-wide">
               {config.intro.greeting}
             </p>
 
@@ -71,16 +84,16 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart }) => {
 
             {/* Divider with liquid effect */}
             <div className="relative h-px">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-400 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-400 dark:via-rose-500/60 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-300 to-transparent blur-sm" />
             </div>
 
             {/* Message with glass effect */}
-            <div className="space-y-4 sm:space-y-5 bg-white/20 backdrop-blur-md rounded-2xl p-6 border border-white/40 shadow-inner">
-              <p className="text-lg sm:text-xl text-rose-900 leading-relaxed font-medium">
+            <div className="space-y-4 sm:space-y-5 bg-white/20 dark:bg-white/[0.06] backdrop-blur-md rounded-2xl p-6 border border-white/40 dark:border-white/[0.08] shadow-inner">
+              <p className="text-lg sm:text-xl text-rose-900 dark:text-rose-100 leading-relaxed font-medium">
                 {config.intro.message}
               </p>
-              <p className="text-base sm:text-lg text-rose-700 leading-relaxed">
+              <p className="text-base sm:text-lg text-rose-700 dark:text-rose-300 leading-relaxed">
                 {config.intro.instruction}
               </p>
             </div>
@@ -96,7 +109,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStart }) => {
               <span className="relative">{config.intro.startButton} 💝</span>
             </button>
 
-            <p className="text-sm sm:text-base text-rose-600 mt-4 sm:mt-6 bg-white/30 backdrop-blur-sm rounded-full px-6 py-2 inline-block border border-white/40">
+            <p className="text-sm sm:text-base text-rose-600 dark:text-rose-400 mt-4 sm:mt-6 bg-white/30 dark:bg-white/[0.06] backdrop-blur-sm rounded-full px-6 py-2 inline-block border border-white/40 dark:border-white/[0.08]">
               {config.intro.timeEstimate} • Made with love by {config.senderName} 💕
             </p>
           </div>

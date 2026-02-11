@@ -182,7 +182,7 @@ export default function App() {
 
   if (state.step === 'question' && currentQuestion) {
     return (
-      <div className="min-h-screen flex flex-col animate-[fadeIn_0.4s_ease-in] relative">
+      <div className="min-h-screen flex flex-col animate-[slideUp_0.4s_ease-in] relative">
         <JourneyIndicator currentStep={state.step} onNavigate={journeyNav} progress={{ current: state.questionIndex + 1, total: questions.length }} />
 
          <QuestionCard

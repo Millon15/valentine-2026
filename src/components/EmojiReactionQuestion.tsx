@@ -40,8 +40,8 @@ export const EmojiReactionQuestion: React.FC<EmojiReactionQuestionProps> = ({
               }}
               className={`group relative px-4 py-6 sm:px-5 sm:py-8 rounded-2xl border-2 transition-all duration-300 ${
                 isSelected
-                  ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-200/50 scale-105'
-                  : 'border-gray-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50 hover:scale-102 hover:shadow-md'
+                  ? 'border-emerald-500 dark:border-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/30 scale-105'
+                  : 'border-gray-200 dark:border-white/[0.12] bg-white dark:bg-white/[0.06] hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/30 hover:scale-102 hover:shadow-md'
               } ${isAnimating ? 'animate-[selection-celebrate_0.6s_ease-out]' : ''}`}
             >
               <div className="flex flex-col items-center gap-2 sm:gap-3">
@@ -52,7 +52,7 @@ export const EmojiReactionQuestion: React.FC<EmojiReactionQuestionProps> = ({
                 </span>
 
                 <span className={`text-xs sm:text-sm font-medium text-center transition-colors duration-300 ${
-                  isSelected ? 'text-emerald-900' : 'text-gray-700 group-hover:text-emerald-800'
+                  isSelected ? 'text-emerald-900 dark:text-emerald-200' : 'text-gray-700 dark:text-gray-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-300'
                 }`}>
                   {option.label}
                 </span>
@@ -82,7 +82,7 @@ export const EmojiReactionQuestion: React.FC<EmojiReactionQuestionProps> = ({
       </div>
 
       {selectedAnswer && (
-        <p className="text-center text-sm sm:text-base text-gray-600 animate-fade-in">
+        <p className="text-center text-sm sm:text-base text-gray-600 dark:text-gray-400 animate-fade-in">
           Perfect choice — your emotions shine through
         </p>
       )}

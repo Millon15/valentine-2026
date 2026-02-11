@@ -67,7 +67,7 @@ export const HeartRatingQuestion: React.FC<HeartRatingQuestionProps> = ({
                 className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 transition-all duration-300 ${
                   isFilled
                     ? 'fill-rose-500 stroke-rose-600 drop-shadow-lg'
-                    : 'fill-gray-200 stroke-gray-300'
+                    : 'fill-gray-200 dark:fill-gray-700 stroke-gray-300 dark:stroke-gray-600'
                 }`}
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
@@ -86,7 +86,7 @@ export const HeartRatingQuestion: React.FC<HeartRatingQuestionProps> = ({
 
       <div className="min-h-[28px] text-center">
         <p
-          className={`text-sm sm:text-base text-rose-600 font-medium transition-opacity duration-300 ${
+          className={`text-sm sm:text-base text-rose-600 dark:text-rose-400 font-medium transition-opacity duration-300 ${
             activeHearts !== null && HEART_LABELS[activeHearts] ? 'opacity-100' : 'opacity-0'
           }`}
         >

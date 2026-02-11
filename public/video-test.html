@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Playback Diagnostic</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 20px auto; padding: 0 16px; background: #1a1a2e; color: #eee; }
+    h1 { font-size: 1.2em; color: #e94560; }
+    h2 { font-size: 1em; margin-top: 24px; color: #e94560; }
+    video { width: 100%; border-radius: 12px; margin: 8px 0; }
+    .log { background: #16213e; border-radius: 8px; padding: 12px; margin: 8px 0; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+    button { background: #e94560; color: white; border: none; padding: 8px 16px; border-radius: 6px; margin: 4px; cursor: pointer; font-size: 14px; }
+    .status { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px; }
+    .status span { background: #16213e; padding: 4px 8px; border-radius: 4px; }
+    .ok { color: #0cca4a; }
+    .fail { color: #e94560; }
+    .warn { color: #f5a623; }
+  </style>
+</head>
+<body>
+  <h1>iOS Video Diagnostic</h1>
+  <p style="font-size:13px;color:#999;">This page tests bare video playback with zero JavaScript frameworks. If videos play here, the issue is in the React app. If not, it's server/device level.</p>
+
+  <h2>Test 1: Smallest video (4.2 MB, faststart)</h2>
+  <video id="v1" autoplay muted loop playsinline controls preload="auto"
+    src="videos/4-tyn-tyn.mp4"></video>
+  <div class="status" id="s1"></div>
+  <div>
+    <button onclick="manualPlay('v1')">Manual Play</button>
+    <button onclick="manualLoad('v1')">Force Load</button>
+  </div>
+  <div class="log" id="log1"></div>
+
+  <h2>Test 2: Larger video (12 MB, moov at end)</h2>
+  <video id="v2" autoplay muted loop playsinline controls preload="auto"
+    src="videos/1-a-ha-take-on-me.mp4"></video>
+  <div class="status" id="s2"></div>
+  <div>
+    <button onclick="manualPlay('v2')">Manual Play</button>
+    <button onclick="manualLoad('v2')">Force Load</button>
+  </div>
+  <div class="log" id="log2"></div>
+
+  <h2>Test 3: Inline source element</h2>
+  <video id="v3" autoplay muted loop playsinline controls preload="auto">
+    <source src="videos/4-tyn-tyn.mp4" type="video/mp4">
+  </video>
+  <div class="status" id="s3"></div>
+  <div>
+    <button onclick="manualPlay('v3')">Manual Play</button>
+  </div>
+  <div class="log" id="log3"></div>
+
+  <h2>Network Info</h2>
+  <div class="log" id="netlog"></div>
+
+  <script>
+    const READY_STATES = ['HAVE_NOTHING','HAVE_METADATA','HAVE_CURRENT_DATA','HAVE_FUTURE_DATA','HAVE_ENOUGH_DATA'];
+    const NETWORK_STATES = ['EMPTY','IDLE','LOADING','NO_SOURCE'];
+    const EVENTS = ['loadstart','progress','suspend','abort','error','emptied','stalled',
+      'loadedmetadata','loadeddata','canplay','canplaythrough','playing','waiting','seeking',
+      'seeked','ended','play','pause','timeupdate','volumechange'];
+
+    function log(id, msg) {
+      const el = document.getElementById('log' + id);
+      const t = new Date().toISOString().slice(11,23);
+      el.textContent += `[${t}] ${msg}\n`;
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function updateStatus(id) {
+      const v = document.getElementById('v' + id);
+      const s = document.getElementById('s' + id);
+      s.innerHTML = `
+        <span>readyState: <b>${READY_STATES[v.readyState] || v.readyState}</b></span>
+        <span>networkState: <b>${NETWORK_STATES[v.networkState] || v.networkState}</b></span>
+        <span>paused: <b class="${v.paused?'fail':'ok'}">${v.paused}</b></span>
+        <span>muted: <b>${v.muted}</b></span>
+        <span>currentTime: <b>${v.currentTime.toFixed(2)}</b></span>
+        <span>duration: <b>${isNaN(v.duration)?'N/A':v.duration.toFixed(2)}</b></span>
+        <span>videoWidth: <b>${v.videoWidth}</b></span>
+        <span>videoHeight: <b>${v.videoHeight}</b></span>
+        <span>error: <b class="${v.error?'fail':'ok'}">${v.error ? 'code='+v.error.code+' '+v.error.message : 'none'}</b></span>
+        <span>src: <b>${v.currentSrc ? new URL(v.currentSrc).pathname : 'none'}</b></span>
+      `;
+    }
+
+    function setupVideo(id) {
+      const v = document.getElementById('v' + id);
+      EVENTS.forEach(evt => {
+        v.addEventListener(evt, () => {
+          log(id, `${evt} | ready=${v.readyState} net=${v.networkState} paused=${v.paused}` +
+            (evt === 'error' && v.error ? ` | err=${v.error.code} ${v.error.message}` : ''));
+          updateStatus(id);
+        });
+      });
+      // Initial status
+      setTimeout(() => {
+        updateStatus(id);
+        log(id, `INIT | ready=${v.readyState} net=${v.networkState} paused=${v.paused} muted=${v.muted} playsInline=${v.playsInline}`);
+      }, 100);
+    }
+
+    function manualPlay(vid) {
+      const v = document.getElementById(vid);
+      const id = vid.replace('v','');
+      v.muted = true;
+      log(id, 'Manual play() called...');
+      const p = v.play();
+      if (p) {
+        p.then(() => log(id, '✅ play() resolved OK'))
+         .catch(e => log(id, '❌ play() rejected: ' + e.name + ': ' + e.message));
+      }
+    }
+
+    function manualLoad(vid) {
+      const v = document.getElementById(vid);
+      const id = vid.replace('v','');
+      log(id, 'Manual load() called...');
+      v.load();
+    }
+
+    // Test network: can we actually fetch the video URL?
+    const netlog = document.getElementById('netlog');
+    fetch('videos/4-tyn-tyn.mp4', { method: 'HEAD' })
+      .then(r => {
+        let info = `HEAD request: ${r.status} ${r.statusText}\n`;
+        r.headers.forEach((val, key) => { info += `  ${key}: ${val}\n`; });
+        netlog.textContent = info;
+      })
+      .catch(e => { netlog.textContent = 'HEAD request failed: ' + e.message; });
+
+    setupVideo('1');
+    setupVideo('2');
+    setupVideo('3');
+  </script>
+</body>
+</html>

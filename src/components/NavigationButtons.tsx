@@ -23,7 +23,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         <button
           type="button"
           onClick={onBack}
-          className="group flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all duration-300 hover:shadow-md active:scale-95"
+          className="group flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-white/15 transition-all duration-300 hover:shadow-md active:scale-95"
         >
           <svg
             className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1"
@@ -52,7 +52,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           disabled={nextDisabled}
           className={`group flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 font-semibold rounded-xl transition-all duration-300 ${
             nextDisabled
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
               : 'bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-300/50 hover:shadow-xl hover:shadow-rose-400/50 hover:scale-105 active:scale-95'
           }`}
         >

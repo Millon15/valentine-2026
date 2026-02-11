@@ -53,6 +53,7 @@ describe('QuestionCard', () => {
     expect(videoElement).toHaveAttribute('controls');
     expect(videoElement).toHaveAttribute('playsinline');
     expect(videoElement.autoplay).toBe(true);
+    // hook always starts muted for iOS compatibility; may unmute on desktop after user gesture
     expect(videoElement.muted).toBe(true);
   });
 

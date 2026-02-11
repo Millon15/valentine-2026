@@ -44,8 +44,8 @@ export const YesNoQuestion: React.FC<YesNoQuestionProps> = ({
           }}
           className={`flex-1 max-w-xs px-6 sm:px-8 py-5 sm:py-6 rounded-2xl border-2 transition-all duration-300 ${
             isNoSelected
-              ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-200/50'
-              : 'border-gray-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50'
+              ? 'border-emerald-500 dark:border-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/30'
+              : 'border-gray-200 dark:border-white/[0.12] bg-white dark:bg-white/[0.06] hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/30'
           } ${animatingSegment === noOption.letterSegment ? 'animate-[selection-celebrate_0.6s_ease-out]' : ''}`}
         >
           <div className="text-center space-y-2">
@@ -53,7 +53,7 @@ export const YesNoQuestion: React.FC<YesNoQuestionProps> = ({
               💫
             </div>
             <span className={`block text-lg sm:text-xl font-semibold ${
-              isNoSelected ? 'text-emerald-900' : 'text-gray-700'
+              isNoSelected ? 'text-emerald-900 dark:text-emerald-200' : 'text-gray-700 dark:text-gray-200'
             }`}>
               {noOption.text}
             </span>
@@ -70,8 +70,8 @@ export const YesNoQuestion: React.FC<YesNoQuestionProps> = ({
           }}
           className={`flex-1 max-w-xs px-6 sm:px-8 py-5 sm:py-6 rounded-2xl border-2 transition-all duration-300 ${
             isYesSelected
-              ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-200/50'
-              : 'border-gray-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50'
+              ? 'border-emerald-500 dark:border-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/30'
+              : 'border-gray-200 dark:border-white/[0.12] bg-white dark:bg-white/[0.06] hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/30'
           } ${animatingSegment === yesOption.letterSegment ? 'animate-[selection-celebrate_0.6s_ease-out]' : ''}`}
         >
           <div className="text-center space-y-2">
@@ -79,7 +79,7 @@ export const YesNoQuestion: React.FC<YesNoQuestionProps> = ({
               💖
             </div>
             <span className={`block text-lg sm:text-xl font-semibold ${
-              isYesSelected ? 'text-emerald-900' : 'text-gray-700'
+              isYesSelected ? 'text-emerald-900 dark:text-emerald-200' : 'text-gray-700 dark:text-gray-200'
             }`}>
               {yesOption.text}
             </span>
