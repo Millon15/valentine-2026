@@ -21,10 +21,10 @@
 export const config = {
   // ─── Names ──────────────────────────────────────────────────────────
   /** The recipient's name (the person taking the quiz) */
-  recipientName: 'Tanya',
+  recipientName: 'My Sandakaariii',
 
   /** The sender's name (the person who created the quiz) */
-  senderName: 'Vitas',
+  senderName: 'Vethesh',
 
   // ─── Page title ─────────────────────────────────────────────────────
   /** Shown in the browser tab */
